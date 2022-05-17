@@ -95,20 +95,43 @@ public class LoginTela extends javax.swing.JFrame {
 
     
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
-        //1. Pegar o login que o usuário digitou
-        String login = loginTextField.getText();
-        //2. Pegar a senha que o usuário digitou
-        String senha = new String(senhaPasswordField.getPassword());
-        //3. Verificar se ambos são iguais a admin
-        if (login.equals("admin") && senha.equals("admin")){
-            //4. Se ambos forem iguais, mostrar uma janela de boas vindas
-            JOptionPane.showMessageDialog(null, "Bem vindo!");
+        try{
+            //1. Pegar o login que o usuário digitou
+            String login = loginTextField.getText();
+            //2. Pegar a senha que o usuário digitou
+            String senha = new String(senhaPasswordField.getPassword());
+            //3. Construir um objeto do tipo DAO
+            DAO dao = new DAO();
+            //4. Construir um objeto do tipo Usuario
+            Usuario u = new Usuario (login, senha);
+            //5. Chamar o método existe passando a ele o objeto Usuario
+            //cláusula catch or declare
+            boolean usuarioExiste = dao.existe(u);
+            //6. Exibir boas vindas ao usuário se ele existir.
+            //Senão, informar que o par usuário/senha é inválido.
+            if (usuarioExiste){
+                //1. Construir um objeto do tipo DashBoardTela
+                DashboardTela dt = new DashboardTela();
+                //2. tornar a tela visível
+                dt.setVisible(true);
+                //3. fechar a tela atual
+                this.dispose();
+                //JOptionPane.showMessageDialog(null, "Bem vindo!!");
+            }
+            else{
+                JOptionPane.showMessageDialog(null, String.format(
+                        "%s/%s é um par usuário/senha inválido",
+                        login, 
+                        senha
+                ));
+            }
         }
-        else{
-            //5. Caso contrário, falar que o par usuário/senha não existe
-            JOptionPane.showMessageDialog(null, "Usuário/senha inválido(s)");
-            
+        catch (Exception e){
+            JOptionPane.showMessageDialog (null, "Falhou. Tente novamente mais tarde.");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
+        
     }//GEN-LAST:event_loginButtonActionPerformed
 
     /**
